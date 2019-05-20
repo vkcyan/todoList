@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <todo-header></todo-header>
-    <router-view/>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -16,7 +16,6 @@ import { Component, Vue } from "vue-property-decorator";
 export default class App extends Vue {}
 </script>
 
-
 <style>
 body {
   margin: 0px;
@@ -30,7 +29,8 @@ body {
   color: #2c3e50;
   width: 500px;
   height: 595px;
-  border: 1px solid #2c3e50;
+  border: 1px solid #bebebe;
+  box-shadow: 2px 2px 6px #c5c5c5;
   margin: 0 auto;
 }
 #nav {

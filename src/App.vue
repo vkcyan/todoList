@@ -28,7 +28,7 @@ body {
   text-align: center;
   color: #2c3e50;
   width: 500px;
-  height: 595px;
+
   border: 1px solid #bebebe;
   box-shadow: 2px 2px 6px #c5c5c5;
   margin: 0 auto;

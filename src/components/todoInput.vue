@@ -36,6 +36,7 @@ export default class todoInput extends Vue {
 
 <style lang="less" scoped>
 .todo_input {
+  padding: 0 30px;
   margin-top: 10px;
   .input_containers {
     border: 1px solid #e0e0e0;

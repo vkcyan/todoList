@@ -4,31 +4,37 @@
       <router-link to="/">Home</router-link>|
       <router-link to="/about">About</router-link>
     </div>-->
-    <!-- todoList头部 -->
+    <!-- todoList过期 -->
+    <div class="oldadays" v-if="expiredList.length != 0">
+      <span class="newsText">过期</span>
+    </div>
+    <draggable
+      :animation="200"
+      v-model="expiredList"
+      @end="onoldEnd"
+      class="todoNewsList listpadd"
+    >
+      <div v-for="item in expiredList" :key="item.date">
+        <ListTodo :item="item" @deleteList="deleteOldList"></ListTodo>
+      </div>
+    </draggable>
+    <!-- todoList今天 -->
     <div class="Nowadays">
       <span class="newsText">今天</span>
       <span class="newsWeek">周{{ newTime.week }}</span>
       <span class="newsMonth">{{ newTime.month }}月{{ newTime.date }}日</span>
     </div>
+
     <draggable
+      handle=".drop"
       :animation="200"
-      v-model="list"
+      v-model="currentList"
       @end="onEnd"
       class="todoNewsList"
     >
       <!-- 已经添加的列表 -->
-      <div class="item" v-for="item in list" :key="item.date">
-        <div class="item-left">
-          <span class="icon" @click="deleteList(item.date)"></span>
-          <span class="title">{{ item.title }}</span>
-        </div>
-        <div class="item-right">
-          <span class="date">{{
-            `${showTodoTime(item.date).month}月${
-              showTodoTime(item.date).date
-            }日`
-          }}</span>
-        </div>
+      <div v-for="item in currentList" :key="item.date">
+        <ListTodo :item="item" @deleteList="deleteList"></ListTodo>
       </div>
     </draggable>
     <todoInput
@@ -46,22 +52,57 @@
 
 <script lang="ts">
 import { getTime, getTodoTime } from "../utils/dateTime";
+import draggable from "vuedraggable";
+import ListTodo from "../components/list.vue";
 import { titleDate, todoList } from "../interfaces";
 import { Component, Vue } from "vue-property-decorator";
-import draggable from "vuedraggable";
 import todoInput from "../components/todoInput.vue";
 @Component({
   components: {
     todoInput,
+    ListTodo,
     draggable
   }
 })
 export default class Home extends Vue {
   mounted() {
-    this.list = this.getlist();
+    // 静态版本的初始化
+    this.init();
   }
   private addShow: boolean = false;
-  private list: todoList[] = [];
+  private expiredList: todoList[] = []; // 过期的任务
+  private currentList: todoList[] = []; // 今天的任务
+  /**
+   * init 初始化函数
+   */
+  public init(): void {
+    // 获取数据源
+    let list: todoList[] = this.getlist();
+    // 获取当天的时间戳区间
+    let currentDate: titleDate = getTime(new Date());
+    let startTime: number = new Date(
+      `${currentDate.year}-${currentDate.month}-${currentDate.date} 00:00:00`
+    ).getTime();
+    let endTime: number = new Date(
+      `${currentDate.year}-${currentDate.month}-${currentDate.date} 23:59:59`
+    ).getTime();
+    let expiredList: todoList[] = [];
+    let currentList: todoList[] = [];
+    list.forEach(res => {
+      if (res.date < startTime) {
+        // 过期任务
+        expiredList.push(res);
+        // 今天的任务
+      } else if (res.date > startTime && res.date < endTime) {
+        currentList.push(res);
+      }
+    });
+
+    this.setlist(currentList);
+    this.setoldList([...this.getoldList(), ...expiredList]);
+    this.expiredList = this.getoldList();
+    this.currentList = this.getlist();
+  }
   private get newTime(): object {
     let time: titleDate = getTime(new Date());
     return time;
@@ -91,7 +132,7 @@ export default class Home extends Vue {
         date: new Date().getTime()
       });
       this.setlist(todoList);
-      this.list = this.getlist();
+      this.currentList = this.getlist();
       let todo_Input: any = this.$refs["todo_Input"];
       todo_Input.clearTodoValue();
     }
@@ -109,15 +150,38 @@ export default class Home extends Vue {
     localStorage.setItem("todoList", JSON.stringify(todoList));
   }
   /**
+   * getoldList 获取过期的todo
+   */
+  public getoldList(): todoList[] {
+    return JSON.parse(localStorage.getItem("oldtodoList") || "[]");
+  }
+  /**
+   * setoldList 更新过期的todo
+   */
+  public setoldList(oldtodoList: object[]) {
+    console.log(this.getoldList());
+    localStorage.setItem("oldtodoList", JSON.stringify(oldtodoList));
+  }
+  /**
    * updateList 删除函数
    * date 时间戳
    */
   public deleteList(todoDate: number) {
-    this.setlist(this.list.filter(item => item.date !== todoDate));
-    this.list = this.getlist();
+    this.setlist(this.currentList.filter(item => item.date !== todoDate));
+    this.currentList = this.getlist();
+  }
+  /**
+   * deleteOldList 删除过期任务
+   */
+  public deleteOldList(todoDate: number) {
+    this.setoldList(this.expiredList.filter(item => item.date !== todoDate));
+    this.expiredList = this.getoldList();
   }
   private onEnd() {
-    this.setlist(this.list);
+    this.setlist(this.currentList);
+  }
+  private onoldEnd() {
+    this.setoldList(this.expiredList);
   }
 }
 </script>
@@ -126,9 +190,17 @@ export default class Home extends Vue {
 .home {
   height: 550px;
   overflow: auto;
-  padding: 30px;
+  .oldadays {
+    text-align: left;
+    .newsText {
+      font-size: 20px;
+      color: rgb(221, 75, 57);
+    }
+  }
   .Nowadays {
     text-align: left;
+    padding: 30px;
+    padding-bottom: 0px;
     .newsText {
       font-size: 20px;
     }
@@ -144,46 +216,11 @@ export default class Home extends Vue {
     }
   }
   .todoNewsList {
-    .item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgb(224, 224, 224);
-      .item-left {
-        display: flex;
-        align-items: center;
-        .icon {
-          display: block;
-          width: 17px;
-          height: 17px;
-          border: 1px solid rgb(177, 177, 177);
-          border-radius: 50%;
-          background-position-x: center;
-          background-position-y: center;
-          cursor: pointer;
-          transition: all 0.2s;
-          background-image: url(../assets/true.png);
-          background-size: 0px 0px;
-          &:hover {
-            width: 19px;
-            height: 19px;
-            transition: all 0.2s;
-            border: 0px;
-            background-image: url("../assets/true.png");
-            background-position-x: center;
-            background-position-y: center;
-            background-size: 19px 19px;
-          }
-        }
-        .title {
-          font-size: 15px;
-          margin-left: 10px;
-          line-height: 45px;
-        }
-      }
-    }
+    padding-right: 30px;
   }
   .add_todo {
+    padding: 0 30px;
+    padding-bottom: 20px;
     cursor: pointer;
     font-size: 14px;
     margin: 10px 0px 0px 0px;
@@ -200,5 +237,8 @@ export default class Home extends Vue {
       color: rgb(128, 128, 128);
     }
   }
+}
+.listpadd {
+  margin-bottom: 10px;
 }
 </style>

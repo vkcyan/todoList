@@ -192,6 +192,8 @@ export default class Home extends Vue {
   overflow: auto;
   .oldadays {
     text-align: left;
+    padding-left: 30px;
+    padding-top: 30px;
     .newsText {
       font-size: 20px;
       color: rgb(221, 75, 57);

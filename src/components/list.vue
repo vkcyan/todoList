@@ -1,20 +1,22 @@
 <template>
-  <div class="item">
-    <div class="item-left">
-      <img class="drop" src="../assets/item.png" alt="" />
-      <span class="icon_con" @click="deleteList(item.date)">
-        <span class="icon"></span>
-      </span>
-      <div class="title_con">
-        <span class="title">{{ item.title }}</span>
-        <img src="../assets/revise.png" alt="" />
+  <div class="list">
+    <img class="drop" src="../assets/item.png" alt="" />
+    <div class="item">
+      <div class="item-left">
+        <span class="icon_con" @click="deleteList(item.date)">
+          <span class="icon"></span>
+        </span>
+        <div class="title_con">
+          <span class="title">{{ item.title }}</span>
+          <img src="../assets/revise.png" alt="" />
+        </div>
       </div>
-    </div>
-    <div class="item-right">
-      <img src="../assets/calendar.png" alt="" />
-      <span class="date">{{
-        `${showTodoTime(item.date).month}月${showTodoTime(item.date).date}日`
-      }}</span>
+      <div class="item-right">
+        <img src="../assets/calendar.png" alt="" />
+        <span class="date">{{
+          `${showTodoTime(item.date).month}月${showTodoTime(item.date).date}日`
+        }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -42,88 +44,96 @@ export default class todoInput extends Vue {
 </script>
 
 <style lang="less" scoped>
-.item {
+.list {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid rgb(224, 224, 224);
-  &:hover .item-left .title_con img {
+  &:hover .item .item-left .title_con img {
     opacity: 1;
   }
-  &:hover .item-left .drop {
+  &:hover .item .item-left .drop {
     opacity: 1;
   }
-  &:hover .item-right img {
+  &:hover .item .item-right img {
     opacity: 1;
   }
-  .item-left {
+  &:hover .drop {
+    opacity: 1;
+  }
+  .drop {
+    cursor: move;
+    padding-left: 20px;
+    padding-right: 5px;
+    width: 15px;
+    height: 15px;
+    opacity: 0;
+  }
+  .item {
+    width: 100%;
     display: flex;
     align-items: center;
-    position: relative;
-    .drop {
-      cursor: pointer;
-      opacity: 0;
-      padding-left: 20px;
-      padding-right: 5px;
-      width: 15px;
-      height: 15px;
-    }
-    .icon_con {
-      display: block;
-      width: 17px;
-      height: 17px;
-      border: 1px solid rgb(177, 177, 177);
-      border-radius: 50%;
-      cursor: pointer;
-      .icon {
+    justify-content: space-between;
+    border-bottom: 1px solid rgb(224, 224, 224);
+
+    .item-left {
+      display: flex;
+      align-items: center;
+      .icon_con {
+        display: block;
         width: 17px;
         height: 17px;
-        display: block;
-        background-position-x: center;
-        background-position-y: center;
-        background-image: url(../assets/true.png);
-        background-size: 0px 0px;
-        opacity: 0;
-        transition: all 0.2s;
-        &:hover {
+        border: 1px solid rgb(177, 177, 177);
+        border-radius: 50%;
+        cursor: pointer;
+        .icon {
+          width: 17px;
+          height: 17px;
           display: block;
-          background-image: url("../assets/true.png");
           background-position-x: center;
           background-position-y: center;
-          background-size: 19px 19px;
-          opacity: 1;
+          background-image: url(../assets/true.png);
+          background-size: 0px 0px;
+          opacity: 0;
           transition: all 0.2s;
+          &:hover {
+            display: block;
+            background-image: url("../assets/true.png");
+            background-position-x: center;
+            background-position-y: center;
+            background-size: 19px 19px;
+            opacity: 1;
+            transition: all 0.2s;
+          }
+        }
+      }
+      .title_con {
+        text-align: left;
+        display: flex;
+        align-items: center;
+        .title {
+          display: inline-block;
+          font-size: 15px;
+          margin-left: 10px;
+          line-height: 45px;
+        }
+        img {
+          cursor: pointer;
+          margin-left: 20px;
+          width: 20px;
+          height: 20px;
+          opacity: 0;
         }
       }
     }
-    .title_con {
-      text-align: left;
+    .item-right {
       display: flex;
       align-items: center;
-      .title {
-        display: inline-block;
-        font-size: 15px;
-        margin-left: 10px;
-        line-height: 45px;
-      }
       img {
+        opacity: 0;
         cursor: pointer;
-        margin-left: 20px;
+        margin-right: 10px;
         width: 20px;
         height: 20px;
-        opacity: 0;
       }
-    }
-  }
-  .item-right {
-    display: flex;
-    align-items: center;
-    img {
-      opacity: 0;
-      cursor: pointer;
-      margin-right: 10px;
-      width: 20px;
-      height: 20px;
     }
   }
 }

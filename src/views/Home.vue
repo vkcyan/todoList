@@ -5,10 +5,12 @@
       <router-link to="/about">About</router-link>
     </div>-->
     <!-- todoList过期 -->
+    <todo-header></todo-header>
     <div class="oldadays" v-if="expiredList.length != 0">
       <span class="newsText">过期</span>
     </div>
     <draggable
+      handle=".drop"
       :animation="200"
       v-model="expiredList"
       @end="onoldEnd"
@@ -57,11 +59,13 @@ import ListTodo from "../components/list.vue";
 import { titleDate, todoList } from "../interfaces";
 import { Component, Vue } from "vue-property-decorator";
 import todoInput from "../components/todoInput.vue";
+import todoHeader from "../components/header.vue";
 @Component({
   components: {
     todoInput,
     ListTodo,
-    draggable
+    draggable,
+    todoHeader
   }
 })
 export default class Home extends Vue {

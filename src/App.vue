@@ -1,18 +1,12 @@
 <template>
   <div id="app">
-    <todo-header></todo-header>
     <router-view></router-view>
   </div>
 </template>
 
 <script lang="ts">
-import todoHeader from "@/components/header.vue";
 import { Component, Vue } from "vue-property-decorator";
-@Component({
-  components: {
-    todoHeader
-  }
-})
+@Component({})
 export default class App extends Vue {}
 </script>
 

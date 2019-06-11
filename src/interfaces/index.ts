@@ -1,3 +1,5 @@
+import { AxiosResponse } from "axios";
+
 /**
  * 时间工具类函数的
  */
@@ -15,4 +17,11 @@ export interface todoList {
   grade: number; // 任务优先级
   title: string; // -todo的主体文字
   date: number; // 时间戳
+}
+
+/**
+ * 后端数据格式
+ */
+export interface koaData extends AxiosResponse {
+  code: number;
 }

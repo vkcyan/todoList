@@ -46,18 +46,21 @@
     ></todoInput>
     <!-- 添加任务入口 -->
     <div class="add_todo">
-      <span @click="addTodo" class="add">添加任务</span>
+      <span @click="test" class="add">添加任务</span>
       <span @click="closeTodo" class="close" v-if="addShow">取消</span>
     </div>
+    <!-- 蒙版 -->
+    <div v-if="!isShowList" class="nushow"></div>
   </div>
 </template>
 
 <script lang="ts">
-import { getTime, getTodoTime } from "../utils/dateTime";
-import draggable from "vuedraggable";
-import ListTodo from "../components/list.vue";
-import { titleDate, todoList } from "../interfaces";
 import { Component, Vue } from "vue-property-decorator";
+import draggable from "vuedraggable";
+import { titleDate, todoList } from "../interfaces";
+import { getTime, getTodoTime } from "../utils/dateTime";
+import { getTodo } from "../api/api";
+import ListTodo from "../components/list.vue";
 import todoInput from "../components/todoInput.vue";
 import todoHeader from "../components/header.vue";
 @Component({
@@ -69,10 +72,14 @@ import todoHeader from "../components/header.vue";
   }
 })
 export default class Home extends Vue {
-  mounted() {
+  async mounted() {
     // 静态版本的初始化
+    this.isShowList = false;
+    let list = await getTodo();
+    this.isShowList = true;
     this.init();
   }
+  private isShowList: boolean = false;
   private addShow: boolean = false;
   private expiredList: todoList[] = []; // 过期的任务
   private currentList: todoList[] = []; // 今天的任务
@@ -120,7 +127,14 @@ export default class Home extends Vue {
   private closeTodo() {
     this.addShow = false;
   }
-
+  /**
+   * test
+   */
+  public test() {
+    this.$message({
+      message: "文字"
+    });
+  }
   /**
    * 增加函数
    * data todo的内容
@@ -163,7 +177,6 @@ export default class Home extends Vue {
    * setoldList 更新过期的todo
    */
   public setoldList(oldtodoList: object[]) {
-    console.log(this.getoldList());
     localStorage.setItem("oldtodoList", JSON.stringify(oldtodoList));
   }
   /**
@@ -192,6 +205,7 @@ export default class Home extends Vue {
 
 <style lang="less" scoped>
 .home {
+  position: relative;
   height: 550px;
   overflow: auto;
   .oldadays {
@@ -246,5 +260,13 @@ export default class Home extends Vue {
 }
 .listpadd {
   margin-bottom: 10px;
+}
+.nushow {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(68, 68, 68);
 }
 </style>

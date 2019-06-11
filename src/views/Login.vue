@@ -9,14 +9,30 @@
         <img src="../assets/email.png" alt="" />
         <input v-model="emailText" placeholder="请输入邮箱" type="text" />
       </div>
+      <div v-show="!isLogin" class="name">
+        <img src="../assets/user.png" alt="" />
+        <input v-model="userText" placeholder="请输入用户名" type="text" />
+      </div>
       <div class="paddword">
         <img src="../assets/password.png" alt="" />
         <input v-model="password" placeholder="请输入密码" type="password" />
       </div>
+      <div v-show="!isLogin" class="paddword">
+        <img src="../assets/password.png" alt="" />
+        <input
+          v-model="rulePass"
+          placeholder="请再次输入密码"
+          type="password"
+        />
+      </div>
     </div>
-    <div class="login_toggle">
-      <div class="registry_btn">注册</div>
+    <div v-if="isLogin" class="login_toggle">
+      <div class="registry_btn" @click="toggleReg">去注册</div>
       <div class="login_btn" @click="login">登录</div>
+    </div>
+    <div v-if="!isLogin" class="login_toggle">
+      <div class="registry_btn" @click="toggleReg">去登录</div>
+      <div class="login_btn" @click="registry">注册</div>
     </div>
   </div>
 </template>
@@ -24,14 +40,33 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { registry } from "@/api/api";
+import { koaData } from "../interfaces/index";
+import { registry, login } from "../api/api";
 @Component({})
 export default class Login extends Vue {
-  public emailText = "";
-  public password = "";
+  public isLogin = true;
+  public emailText = "wu.vkcyan@gmail.com";
+  public userText = "vkcyan";
+  public password = "111111";
+  public rulePass = "111111";
+  // 切换到注册
+  private toggleReg() {
+    this.isLogin = !this.isLogin;
+  }
+  // 注册
+  private async registry() {
+    if (this.password === this.rulePass) {
+      let data = await registry(this.emailText, this.userText, this.password);
+      console.log(data);
+    }
+  }
   private async login() {
-    let data = await registry(this.emailText, this.password);
-    console.log(data);
+    let data = await login(this.emailText, this.password);
+    if (data.code == 1) {
+      this.$router.push({ path: "/" });
+    } else {
+      alert(data.data);
+    }
   }
 }
 </script>
@@ -79,6 +114,21 @@ export default class Login extends Vue {
       position: absolute;
       top: 50%;
       transform: translate(0%, -50%);
+      width: 20px;
+      height: 20px;
+    }
+  }
+  .name {
+    position: relative;
+    input {
+      margin-top: 10px;
+      .base_input();
+    }
+    img {
+      margin-left: 5px;
+      position: absolute;
+      top: 50%;
+      transform: translate(0%, -30%);
       width: 20px;
       height: 20px;
     }

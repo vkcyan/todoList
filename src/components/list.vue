@@ -3,7 +3,7 @@
     <img class="drop" src="../assets/item.png" alt="" />
     <div class="item">
       <div class="item-left">
-        <span class="icon_con" @click="deleteList(item.date)">
+        <span class="icon_con" @click="deleteList(item.code)">
           <span class="icon"></span>
         </span>
         <div class="title_con">
@@ -14,7 +14,7 @@
       <div class="item-right">
         <img src="../assets/calendar.png" alt="" />
         <span class="date">{{
-          `${showTodoTime(item.date).month}月${showTodoTime(item.date).date}日`
+          `${showTodoTime(item.timer).month}月${showTodoTime(item.timer).date}日`
         }}</span>
       </div>
     </div>
@@ -34,8 +34,8 @@ export default class todoInput extends Vue {
   @Prop(Object) item!: Object;
 
   @Emit("deleteList")
-  deleteList(date: number) {
-    return date;
+  deleteList(code: number) {
+    return code;
   }
   private showTodoTime(timer: number): object {
     return getTime(getTodoTime(timer));

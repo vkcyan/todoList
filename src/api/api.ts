@@ -1,4 +1,4 @@
-import request from "@/utils/request";
+import request from '@/utils/request'
 /**
  * 注册
  * @param email 邮箱地址
@@ -6,14 +6,14 @@ import request from "@/utils/request";
  */
 export function registry(email: string, username: String, password: string) {
   return request({
-    url: "/registry",
-    method: "POST",
+    url: '/registry',
+    method: 'POST',
     data: {
       email,
       username,
       password
     }
-  });
+  })
 }
 
 /**
@@ -23,13 +23,13 @@ export function registry(email: string, username: String, password: string) {
  */
 export function login(email: string, password: string) {
   return request({
-    url: "/login",
-    method: "POST",
+    url: '/login',
+    method: 'POST',
     data: {
       email,
       password
     }
-  });
+  })
 }
 
 /**
@@ -37,7 +37,19 @@ export function login(email: string, password: string) {
  */
 export function getTodo() {
   return request({
-    url: "/todo",
-    method: "GET"
-  });
+    url: '/todo',
+    method: 'GET'
+  })
+}
+
+/**
+ * 添加todo的数据
+ * @param data
+ */
+export function setTodo(data: object) {
+  return request({
+    url: '/getTodo',
+    method: 'POST',
+    data
+  })
 }

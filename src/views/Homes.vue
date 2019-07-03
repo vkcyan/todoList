@@ -55,7 +55,7 @@ import { Component, Vue } from "vue-property-decorator";
 import draggable from "vuedraggable";
 import { titleDate, todoList } from "../interfaces";
 import { getTime, getTodoTime } from "../utils/dateTime";
-import { getTodo, setTodo } from "../api/api";
+import { getTodo, setTodo, carryOutTodo } from "../api/api";
 import ListTodo from "../components/list.vue";
 import todoInput from "../components/todoInput.vue";
 import todoHeader from "../components/header.vue";
@@ -80,9 +80,28 @@ export default class Home extends Vue {
    */
   public async init(): Promise<any> {
     let list = await getTodo();
-    console.log(list);
+    const { data } = list;
     this.isShowList = true;
-    this.currentList = list.data;
+    let currentDate: titleDate = getTime(new Date());
+    let startTime: number = new Date(
+      `${currentDate.year}-${currentDate.month}-${currentDate.date} 00:00:00`
+    ).getTime();
+    let endTime: number = new Date(
+      `${currentDate.year}-${currentDate.month}-${currentDate.date} 23:59:59`
+    ).getTime();
+    let expiredList: todoList[] = [];
+    let currentList: todoList[] = [];
+    data.forEach(res => {
+      if (res.timer < startTime) {
+        // 过期任务
+        expiredList.push(res);
+        // 今天的任务
+      } else if (res.timer > startTime && res.timer < endTime) {
+        currentList.push(res);
+      }
+    });
+    this.expiredList = expiredList;
+    this.currentList = currentList;
   }
   // 获取当前时间
   private get newTime(): object {
@@ -125,10 +144,17 @@ export default class Home extends Vue {
   }
   onoldEnd() {}
   onEnd() {}
-  deleteList(code: number) {
-    console.log(code);
+  async deleteList(id: string) {
+    let data = await carryOutTodo(id);
+    console.log(data);
+    this.init()
+
   }
-  deleteOldList() {}
+  async deleteOldList(id: string) {
+    let data = await carryOutTodo(id);
+    console.log(data);
+    this.init()
+  }
 }
 </script>
 

@@ -3,7 +3,7 @@
     <img class="drop" src="../assets/item.png" alt="" />
     <div class="item">
       <div class="item-left">
-        <span class="icon_con" @click="deleteList(item.code)">
+        <span class="icon_con" @click="deleteList(item.id)">
           <span class="icon"></span>
         </span>
         <div class="title_con">

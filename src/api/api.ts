@@ -53,3 +53,18 @@ export function setTodo(data: object) {
     data
   })
 }
+
+
+/**
+ * 完成todo事件
+ * @param id 
+ */
+export function carryOutTodo(id:string) {
+  return request({
+    url: '/carryOutTodo',
+    method: 'POST',
+    data: {
+      id
+    }
+  })
+}

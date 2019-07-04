@@ -17,7 +17,7 @@
       class="todoNewsList listpadd"
     >
       <div v-for="item in expiredList" :key="item.date">
-        <ListTodo :item="item" @deleteList="deleteOldList"></ListTodo>
+        <ListTodo :item="item" @deleteList="deleteOldList" @updateTitle="updateoldshow"></ListTodo>
       </div>
     </draggable>
     <!-- todoList今天 -->
@@ -36,7 +36,7 @@
     >
       <!-- 已经添加的列表 -->
       <div v-for="item in currentList" :key="item.date">
-        <ListTodo :item="item" @deleteList="deleteList"></ListTodo>
+        <ListTodo :item="item" @deleteList="deleteList" @updateTitle="updateshow"></ListTodo>
       </div>
     </draggable>
     <todoInput ref="todo_Input" v-if="addShow" @addTodoActive="addTodoActive"></todoInput>
@@ -55,7 +55,7 @@ import { Component, Vue } from "vue-property-decorator";
 import draggable from "vuedraggable";
 import { titleDate, todoList } from "../interfaces";
 import { getTime, getTodoTime } from "../utils/dateTime";
-import { getTodo, setTodo, carryOutTodo } from "../api/api";
+import { getTodo, setTodo, carryOutTodo, updateTitle } from "../api/api";
 import ListTodo from "../components/list.vue";
 import todoInput from "../components/todoInput.vue";
 import todoHeader from "../components/header.vue";
@@ -92,6 +92,7 @@ export default class Home extends Vue {
     let expiredList: todoList[] = [];
     let currentList: todoList[] = [];
     data.forEach(res => {
+      res.isupdate = false
       if (res.timer < startTime) {
         // 过期任务
         expiredList.push(res);
@@ -147,13 +148,40 @@ export default class Home extends Vue {
   async deleteList(id: string) {
     let data = await carryOutTodo(id);
     console.log(data);
-    this.init()
-
+    this.init();
   }
   async deleteOldList(id: string) {
     let data = await carryOutTodo(id);
     console.log(data);
-    this.init()
+    this.init();
+  }
+  // 针对过期任务
+  async updateoldshow(id: string) {
+    this.expiredList.map((res, index) => {
+      if (id === res.id) {
+        this.expiredList[index].isupdate = true;
+      } else {
+        this.expiredList[index].isupdate = false;
+      }
+      console.log(this.expiredList);
+    });
+  }
+  // 针对今天任务
+  async updateshow(id: string) {
+    this.currentList.map((res, index) => {
+      if (id === res.id) {
+        this.currentList[index].isupdate = true;
+      } else {
+        this.currentList[index].isupdate = false;
+      }
+    });
+    console.log(this.currentList);
+  }
+  async updateoldTitle(id: string) {
+    console.log(id);
+  }
+  async updateTitle(id: string) {
+    console.log(id);
   }
 }
 </script>

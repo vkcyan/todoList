@@ -1,21 +1,24 @@
 <template>
   <div class="list">
-    <img class="drop" src="../assets/item.png" alt="" />
+    <img class="drop" src="../assets/item.png" alt />
     <div class="item">
       <div class="item-left">
         <span class="icon_con" @click="deleteList(item.id)">
           <span class="icon"></span>
         </span>
         <div class="title_con">
-          <span class="title">{{ item.title }}</span>
-          <img src="../assets/revise.png" alt="" />
+          <span v-if="!item.isupdate" class="title">{{ item.title }}</span>
+          <input v-if="item.isupdate" class="carryOutTitle" type="text" v-model="item.title" />
+          <img @click="updateTitle(item.id)" src="../assets/revise.png" alt />
         </div>
       </div>
       <div class="item-right">
-        <img src="../assets/calendar.png" alt="" />
-        <span class="date">{{
+        <img src="../assets/calendar.png" alt />
+        <span class="date">
+          {{
           `${showTodoTime(item.timer).month}月${showTodoTime(item.timer).date}日`
-        }}</span>
+          }}
+        </span>
       </div>
     </div>
   </div>
@@ -34,8 +37,12 @@ export default class todoInput extends Vue {
   @Prop(Object) item!: Object;
 
   @Emit("deleteList")
-  deleteList(code: number) {
-    return code;
+  deleteList(id: string) {
+    return id;
+  }
+  @Emit("updateTitle")
+  updateTitle(id: string) {
+    return id;
   }
   private showTodoTime(timer: number): object {
     return getTime(getTodoTime(timer));
@@ -114,6 +121,13 @@ export default class todoInput extends Vue {
           font-size: 15px;
           margin-left: 10px;
           line-height: 45px;
+        }
+        .carryOutTitle {
+          display: inline-block;
+          font-size: 15px;
+          line-height: 25px;
+          margin: 10px 0px;
+          margin-left: 10px;
         }
         img {
           cursor: pointer;

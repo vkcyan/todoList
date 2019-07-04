@@ -14,9 +14,13 @@ export interface titleDate {
  * -TodoList主体的数据结构
  */
 export interface todoList {
-  grade: number; // 任务优先级
-  title: string; // -todo的主体文字
-  date: number; // 时间戳
+  code: string // 用户id
+  id: string // todoid
+  priority: number //优先级
+  sort: number // 排序
+  timer: number // 时间戳
+  title: string // 主体内容,
+  isupdate: boolean // 是否是修改状态
 }
 
 /**

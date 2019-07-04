@@ -54,17 +54,32 @@ export function setTodo(data: object) {
   })
 }
 
-
 /**
  * 完成todo事件
- * @param id 
+ * @param id
  */
-export function carryOutTodo(id:string) {
+export function carryOutTodo(id: string) {
   return request({
     url: '/carryOutTodo',
     method: 'POST',
     data: {
       id
+    }
+  })
+}
+
+/**
+ * 更新单个todo
+ * @param id 
+ * @param title 
+ */
+export function updateTitle(id: string, title: string) {
+  return request({
+    url: '/updateTitle',
+    method: 'POST',
+    data: {
+      id,
+      title
     }
   })
 }

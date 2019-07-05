@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" @click="clearTitle">
     <!-- <div id="nav">
       <router-link to="/">Home</router-link>|
       <router-link to="/about">About</router-link>
@@ -17,7 +17,13 @@
       class="todoNewsList listpadd"
     >
       <div v-for="item in expiredList" :key="item.date">
-        <ListTodo :item="item" @deleteList="deleteOldList" @updateTitle="updateoldshow"></ListTodo>
+        <ListTodo
+          :item="item"
+          @deleteList="deleteOldList"
+          @updateshow="updateoldshow"
+          @clearTitle="clearTitle"
+          @updateTitle="updatetitle"
+        ></ListTodo>
       </div>
     </draggable>
     <!-- todoList今天 -->
@@ -36,7 +42,13 @@
     >
       <!-- 已经添加的列表 -->
       <div v-for="item in currentList" :key="item.date">
-        <ListTodo :item="item" @deleteList="deleteList" @updateTitle="updateshow"></ListTodo>
+        <ListTodo
+          :item="item"
+          @deleteList="deleteList"
+          @updateshow="updateshow"
+          @clearTitle="clearTitle"
+          @updateTitle="updatetitle"
+        ></ListTodo>
       </div>
     </draggable>
     <todoInput ref="todo_Input" v-if="addShow" @addTodoActive="addTodoActive"></todoInput>
@@ -80,6 +92,7 @@ export default class Home extends Vue {
    */
   public async init(): Promise<any> {
     let list = await getTodo();
+    console.log(list);
     const { data } = list;
     this.isShowList = true;
     let currentDate: titleDate = getTime(new Date());
@@ -91,8 +104,8 @@ export default class Home extends Vue {
     ).getTime();
     let expiredList: todoList[] = [];
     let currentList: todoList[] = [];
-    data.forEach(res => {
-      res.isupdate = false
+    data.forEach((res: any) => {
+      res.isupdate = false;
       if (res.timer < startTime) {
         // 过期任务
         expiredList.push(res);
@@ -177,11 +190,22 @@ export default class Home extends Vue {
     });
     console.log(this.currentList);
   }
+  // 关闭所有
+  clearTitle() {
+    this.currentList.map((res, index) => {
+      this.currentList[index].isupdate = false;
+    });
+    this.expiredList.map((res, index) => {
+      this.expiredList[index].isupdate = false;
+    });
+  }
   async updateoldTitle(id: string) {
     console.log(id);
   }
-  async updateTitle(id: string) {
-    console.log(id);
+  async updatetitle(data: any) {
+    const { id, title } = data;
+    let res = await updateTitle(id,title)
+    console.log(res);
   }
 }
 </script>

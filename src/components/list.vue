@@ -8,8 +8,15 @@
         </span>
         <div class="title_con">
           <span v-if="!item.isupdate" class="title">{{ item.title }}</span>
-          <input v-if="item.isupdate" class="carryOutTitle" type="text" v-model="item.title" />
-          <img @click="updateTitle(item.id)" src="../assets/revise.png" alt />
+          <input
+            @keydown.enter="changeTitle(item.id,item.title)"
+            @click.stop="defaultClick"
+            v-if="item.isupdate"
+            class="carryOutTitle"
+            type="text"
+            v-model="item.title"
+          />
+          <img @click.stop="updateshow(item.id)" src="../assets/revise.png" alt />
         </div>
       </div>
       <div class="item-right">
@@ -40,9 +47,26 @@ export default class todoInput extends Vue {
   deleteList(id: string) {
     return id;
   }
-  @Emit("updateTitle")
-  updateTitle(id: string) {
+  @Emit("updateshow")
+  updateshow(id: string) {
     return id;
+  }
+
+  private defaultClick(e: Element) {}
+
+  private changeTitle(id: string, title: string) {
+    this.clearTitle();
+    this.defaultupdate(id, title);
+  }
+  
+  @Emit("clearTitle")
+  clearTitle() {}
+  @Emit("updateTitle")
+  defaultupdate(id: string, title: string) {
+    return {
+      id,
+      title
+    };
   }
   private showTodoTime(timer: number): object {
     return getTime(getTodoTime(timer));

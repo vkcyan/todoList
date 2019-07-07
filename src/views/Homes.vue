@@ -51,7 +51,12 @@
         ></ListTodo>
       </div>
     </draggable>
-    <todoInput ref="todo_Input" v-if="addShow" @addTodoActive="addTodoActive"></todoInput>
+    <todoInput
+      ref="todo_Input"
+      v-if="addShow"
+      @addTodoActive="addTodoActive"
+      @closeTodo="closeTodo"
+    ></todoInput>
     <!-- 添加任务入口 -->
     <div class="add_todo">
       <span @click="addTodo" class="add">添加任务</span>
@@ -125,10 +130,10 @@ export default class Home extends Vue {
   private showTodoTime(timer: number): object {
     return getTime(getTodoTime(timer));
   }
-  private addTodo() {
+  private addTodo(): void {
     this.addShow = true;
   }
-  private closeTodo() {
+  private closeTodo(): void {
     this.addShow = false;
   }
   /**
@@ -154,19 +159,32 @@ export default class Home extends Vue {
       let todo_Input: any = this.$refs["todo_Input"];
       todo_Input.clearTodoValue();
       this.closeTodo();
+      this.$message({
+        message: "添加成功",
+        type: "success"
+      });
     }
   }
   onoldEnd() {}
-  onEnd() {}
+  onEnd(e) {
+    console.log(e);
+  }
   async deleteList(id: string) {
     let data = await carryOutTodo(id);
-    console.log(data);
     this.init();
+    this.$message({
+      message: "完成任务",
+      type: "success"
+    });
   }
   async deleteOldList(id: string) {
     let data = await carryOutTodo(id);
     console.log(data);
     this.init();
+    this.$message({
+      message: "完成任务",
+      type: "success"
+    });
   }
   // 针对过期任务
   async updateoldshow(id: string) {
@@ -198,14 +216,19 @@ export default class Home extends Vue {
     this.expiredList.map((res, index) => {
       this.expiredList[index].isupdate = false;
     });
+    // 关闭所有的时候需要对修改的数据进行回滚
+    // this.init()
   }
   async updateoldTitle(id: string) {
     console.log(id);
   }
   async updatetitle(data: any) {
     const { id, title } = data;
-    let res = await updateTitle(id,title)
-    console.log(res);
+    let res = await updateTitle(id, title);
+    this.$message({
+      message: res.data,
+      type: "success"
+    });
   }
 }
 </script>

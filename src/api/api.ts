@@ -70,8 +70,8 @@ export function carryOutTodo(id: string) {
 
 /**
  * 更新单个todo
- * @param id 
- * @param title 
+ * @param id
+ * @param title
  */
 export function updateTitle(id: string, title: string) {
   return request({

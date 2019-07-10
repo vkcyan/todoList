@@ -147,6 +147,7 @@ export default class todoInput extends Vue {
           line-height: 45px;
         }
         .carryOutTitle {
+          z-index: 200;
           display: inline-block;
           font-size: 15px;
           line-height: 25px;

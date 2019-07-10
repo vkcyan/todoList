@@ -1,5 +1,6 @@
 <template>
-  <div class="home" @click="clearTitle">
+  <div class="home">
+    <div class="back_home" v-if="isupdate" @click="Rollbackdata"></div>
     <!-- <div id="nav">
       <router-link to="/">Home</router-link>|
       <router-link to="/about">About</router-link>
@@ -88,8 +89,14 @@ export default class Home extends Vue {
   async mounted() {
     this.init();
   }
-  private isShowList: boolean = false;
-  private addShow: boolean = false;
+  private isShowList: boolean = false; // 控制todolist的显示
+  private addShow: boolean = false; // 是否显示添加组件
+  private isupdate: boolean = false; // 当前是否为更新title状态
+  private updateData = {
+    index: 0, // 数据
+    title: "", // 数据
+    type: 1 // 1 过期todo 2 今天todo
+  };
   private expiredList: todoList[] = []; // 过期的任务
   private currentList: todoList[] = []; // 今天的任务
   /**
@@ -188,47 +195,75 @@ export default class Home extends Vue {
   }
   // 针对过期任务
   async updateoldshow(id: string) {
+    this.isupdate = true;
     this.expiredList.map((res, index) => {
       if (id === res.id) {
         this.expiredList[index].isupdate = true;
+        // 保存副本
+        this.updateData = {
+          index, //
+          title: this.expiredList[index].title,
+          type: 1
+        };
       } else {
         this.expiredList[index].isupdate = false;
       }
-      console.log(this.expiredList);
     });
   }
   // 针对今天任务
   async updateshow(id: string) {
+    // 点击的时候还要保存副本,因为可能存在
+    this.isupdate = true;
     this.currentList.map((res, index) => {
       if (id === res.id) {
         this.currentList[index].isupdate = true;
+        // 保存副本
+        this.updateData = {
+          index, //
+          title: this.currentList[index].title,
+          type: 2
+        };
       } else {
         this.currentList[index].isupdate = false;
       }
     });
-    console.log(this.currentList);
+  }
+  // 回滚未修改的数据
+  Rollbackdata() {
+    if (this.updateData.type == 1) {
+      this.expiredList[this.updateData.index].title = this.updateData.title;
+    } else if (this.updateData.type == 2) {
+      this.currentList[this.updateData.index].title = this.updateData.title;
+    }
+    this.clearTitle();
   }
   // 关闭所有
   clearTitle() {
-    this.currentList.map((res, index) => {
-      this.currentList[index].isupdate = false;
-    });
-    this.expiredList.map((res, index) => {
-      this.expiredList[index].isupdate = false;
-    });
+    this.currentList.map(
+      (res, index) => (this.currentList[index].isupdate = false)
+    );
+    this.expiredList.map(
+      (res, index) => (this.expiredList[index].isupdate = false)
+    );
+    this.isupdate = false;
     // 关闭所有的时候需要对修改的数据进行回滚
-    // this.init()
-  }
-  async updateoldTitle(id: string) {
-    console.log(id);
   }
   async updatetitle(data: any) {
-    const { id, title } = data;
-    let res = await updateTitle(id, title);
-    this.$message({
-      message: res.data,
-      type: "success"
-    });
+    const { id, title } = data; 
+    try {
+      let res = await updateTitle(id, title);
+      this.$message({ // 排序
+        message: res.data,
+        type: "success"
+      });
+    } catch (error) {
+      this.$message({
+        message: error,
+        type: "error"
+      });
+    }
+
+    this.isupdate = false;
   }
 }
 </script>
@@ -238,6 +273,13 @@ export default class Home extends Vue {
   position: relative;
   height: 550px;
   overflow: auto;
+  .back_home {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
   .oldadays {
     text-align: left;
     padding-left: 30px;

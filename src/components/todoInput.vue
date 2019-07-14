@@ -2,7 +2,12 @@
   <div class="todo_input">
     <div class="input_containers">
       <div class="input_left">
-        <input ref="todoInput" v-model="todoValue" @keyup.enter="setTodo" @keyup.esc="closeTodo" />
+        <input
+          ref="todoInput"
+          v-model="todoValue"
+          @keyup.enter="setTodo"
+          @keyup.esc="closeTodo"
+        />
       </div>
       <div class="input_right">
         今天
@@ -31,7 +36,7 @@ export default class todoInput extends Vue {
   public clearTodoValue() {
     this.todoValue = "";
   }
-  @Emit('closeTodo')
+  @Emit("closeTodo")
   closeTodo() {}
 }
 </script>

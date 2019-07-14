@@ -7,23 +7,35 @@
           <span class="icon"></span>
         </span>
         <div class="title_con">
-          <span v-if="!item.isupdate" class="title">{{ item.title }}</span>
+          <div
+            v-if="!item.isupdate"
+            class="title"
+            @click.stop="updateshow(item.id)"
+          >
+            {{ item.title }}
+          </div>
           <input
-            @keydown.enter="changeTitle(item.id,item.title)"
+            @keydown.enter="changeTitle(item.id, item.title)"
             @click.stop="defaultClick"
             v-if="item.isupdate"
             class="carryOutTitle"
             type="text"
             v-model="item.title"
           />
-          <img @click.stop="updateshow(item.id)" src="../assets/revise.png" alt />
+          <img
+            @click.stop="updateshow(item.id)"
+            src="../assets/revise.png"
+            alt
+          />
         </div>
       </div>
       <div class="item-right">
         <img src="../assets/calendar.png" alt />
         <span class="date">
           {{
-          `${showTodoTime(item.timer).month}月${showTodoTime(item.timer).date}日`
+            `${showTodoTime(item.timer).month}月${
+              showTodoTime(item.timer).date
+            }日`
           }}
         </span>
       </div>
@@ -58,7 +70,7 @@ export default class todoInput extends Vue {
     this.clearTitle();
     this.defaultupdate(id, title);
   }
-  
+
   @Emit("clearTitle")
   clearTitle() {}
   @Emit("updateTitle")
@@ -141,13 +153,14 @@ export default class todoInput extends Vue {
         display: flex;
         align-items: center;
         .title {
+          cursor: pointer;
           display: inline-block;
           font-size: 15px;
           margin-left: 10px;
           line-height: 45px;
         }
         .carryOutTitle {
-          z-index: 200;
+          z-index: 2000;
           display: inline-block;
           font-size: 15px;
           line-height: 25px;

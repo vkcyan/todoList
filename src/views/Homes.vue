@@ -173,9 +173,7 @@ export default class Home extends Vue {
     }
   }
   onoldEnd() {}
-  onEnd(e) {
-    console.log(e);
-  }
+  onEnd() {}
   async deleteList(id: string) {
     let data = await carryOutTodo(id);
     this.init();
@@ -249,10 +247,11 @@ export default class Home extends Vue {
     // 关闭所有的时候需要对修改的数据进行回滚
   }
   async updatetitle(data: any) {
-    const { id, title } = data; 
+    const { id, title } = data;
     try {
       let res = await updateTitle(id, title);
-      this.$message({ // 排序
+      this.$message({
+        // 排序
         message: res.data,
         type: "success"
       });
@@ -274,6 +273,7 @@ export default class Home extends Vue {
   height: 550px;
   overflow: auto;
   .back_home {
+    z-index: 1000;
     position: absolute;
     top: 0;
     left: 0;

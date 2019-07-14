@@ -45,10 +45,10 @@ import { registry, login } from "../api/api";
 @Component({})
 export default class Login extends Vue {
   public isLogin = true;
-  public emailText = "wu.vkcyan@gmail.com";
-  public userText = "vkcyan";
-  public password = "111111";
-  public rulePass = "111111";
+  public emailText = "";
+  public userText = "";
+  public password = "";
+  public rulePass = "";
   // 切换到注册
   private toggleReg() {
     this.isLogin = !this.isLogin;
@@ -58,6 +58,14 @@ export default class Login extends Vue {
     if (this.password === this.rulePass) {
       let data = await registry(this.emailText, this.userText, this.password);
       console.log(data);
+      if (data.code == 200) {
+        this.$message({
+          message: data.data,
+          type: "error"
+        });
+      } else if (data.code == 1) {
+        this.toggleReg();
+      }
     }
   }
   private async login() {

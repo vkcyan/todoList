@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/request';
 /**
  * 注册
  * @param email 邮箱地址
@@ -13,7 +13,7 @@ export function registry(email: string, username: String, password: string) {
       username,
       password
     }
-  })
+  });
 }
 
 /**
@@ -29,7 +29,7 @@ export function login(email: string, password: string) {
       email,
       password
     }
-  })
+  });
 }
 
 /**
@@ -39,7 +39,7 @@ export function getTodo() {
   return request({
     url: '/todo',
     method: 'GET'
-  })
+  });
 }
 
 /**
@@ -51,7 +51,7 @@ export function setTodo(data: object) {
     url: '/getTodo',
     method: 'POST',
     data
-  })
+  });
 }
 
 /**
@@ -65,7 +65,7 @@ export function carryOutTodo(id: string) {
     data: {
       id
     }
-  })
+  });
 }
 
 /**
@@ -81,5 +81,21 @@ export function updateTitle(id: string, title: string) {
       id,
       title
     }
-  })
+  });
+}
+
+/**
+ * 拖拽移动todo位置
+ * @param id 移动的todo的id
+ * @param sort 新的位置
+ */
+export function mobilTodo(id: string, sort: number) {
+  return request({
+    url: '/mobilTodo',
+    method: 'POST',
+    data: {
+      id,
+      sort
+    }
+  });
 }

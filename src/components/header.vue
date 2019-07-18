@@ -7,16 +7,19 @@
         <span></span>
       </div>
     </div>
-    <div class="header_right">
+    <div class="header_right" @click="openRightModal">
       <img src="../assets/setting.png" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Emit } from "vue-property-decorator";
 @Component({})
-export default class TodoHeader extends Vue {}
+export default class TodoHeader extends Vue {
+  @Emit("openRightModal")
+  openRightModal() {}
+}
 </script>
 
 <style lang="less" scoped>

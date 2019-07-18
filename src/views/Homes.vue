@@ -6,7 +6,7 @@
       <router-link to="/about">About</router-link>
     </div>-->
     <!-- todoList过期 -->
-    <todo-header></todo-header>
+    <todo-header @openRightModal="toggleRightModal"></todo-header>
     <div class="oldadays" v-if="expiredList.length != 0">
       <span class="newsText">过期</span>
     </div>
@@ -60,11 +60,18 @@
     ></todoInput>
     <!-- 添加任务入口 -->
     <div class="add_todo">
-      <span @click="addTodo" class="add">添加任务</span>
+      <span @click="addTodo" class="add" v-if="!addShow">添加任务</span>
       <span @click="closeTodo" class="close" v-if="addShow">取消</span>
     </div>
     <!-- 蒙版 -->
-    <div v-if="!isShowList" class="nushow"></div>
+    <loading-page :showLoading="!isShowList"></loading-page>
+    <!-- 左侧菜单栏 -->
+    <left-menu :leftShow="leftShow"></left-menu>
+    <!-- 右侧菜单栏 -->
+    <right-menu
+      :rightShow="rightShow"
+      @closeRightModal="toggleRightModal"
+    ></right-menu>
   </div>
 </template>
 
@@ -73,16 +80,28 @@ import { Component, Vue } from "vue-property-decorator";
 import draggable from "vuedraggable";
 import { titleDate, todoList } from "../interfaces";
 import { getTime, getTodoTime } from "../utils/dateTime";
-import { getTodo, setTodo, carryOutTodo, updateTitle } from "../api/api";
+import {
+  getTodo,
+  setTodo,
+  carryOutTodo,
+  updateTitle,
+  mobilTodo
+} from "../api/api";
 import ListTodo from "../components/list.vue";
 import todoInput from "../components/todoInput.vue";
 import todoHeader from "../components/header.vue";
+import loadingPage from "../components/loadingPage.vue";
+import leftMenu from "../components/leftMenu.vue";
+import rightMenu from "../components/rightMenu.vue";
 @Component({
   components: {
     todoInput,
     ListTodo,
     draggable,
-    todoHeader
+    todoHeader,
+    loadingPage,
+    leftMenu,
+    rightMenu
   }
 })
 export default class Home extends Vue {
@@ -99,6 +118,8 @@ export default class Home extends Vue {
   };
   private expiredList: todoList[] = []; // 过期的任务
   private currentList: todoList[] = []; // 今天的任务
+  public leftShow: boolean = false; // 控制左侧菜单显示
+  public rightShow: boolean = true; // 控制右侧菜单显示
   /**
    * init 初始化函数
    */
@@ -173,7 +194,17 @@ export default class Home extends Vue {
     }
   }
   onoldEnd() {}
-  onEnd() {}
+  async onEnd(e: any) {
+    console.log(e.oldIndex, e.newIndex);
+    const sort: number = e.newIndex;
+    const id: string = this.currentList[e.newIndex].id;
+    console.log(this.currentList[e.newIndex].title);
+    try {
+      await mobilTodo(id, sort);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   async deleteList(id: string) {
     let data = await carryOutTodo(id);
     this.init();
@@ -246,6 +277,7 @@ export default class Home extends Vue {
     this.isupdate = false;
     // 关闭所有的时候需要对修改的数据进行回滚
   }
+  // 更新todoList的内容
   async updatetitle(data: any) {
     const { id, title } = data;
     try {
@@ -261,8 +293,10 @@ export default class Home extends Vue {
         type: "error"
       });
     }
-
     this.isupdate = false;
+  }
+  toggleRightModal() {
+    this.rightShow = !this.rightShow;
   }
 }
 </script>
@@ -271,7 +305,7 @@ export default class Home extends Vue {
 .home {
   position: relative;
   height: 550px;
-  overflow: auto;
+  overflow-x: hidden;
   .back_home {
     z-index: 1000;
     position: absolute;
@@ -339,6 +373,6 @@ export default class Home extends Vue {
   left: 0px;
   width: 100%;
   height: 100%;
-  background-color: rgb(68, 68, 68);
+  background-color: rgb(253, 253, 253);
 }
 </style>

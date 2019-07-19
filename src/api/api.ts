@@ -99,3 +99,13 @@ export function mobilTodo(id: string, sort: number) {
     }
   });
 }
+
+/**
+ * 登出系统
+ */
+export function loginout() {
+  return request({
+    url: '/loginout',
+    method: 'POST'
+  });
+}

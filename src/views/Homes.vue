@@ -71,6 +71,7 @@
     <right-menu
       :rightShow="rightShow"
       @closeRightModal="toggleRightModal"
+      @ParentLoginout="loginout"
     ></right-menu>
   </div>
 </template>
@@ -119,7 +120,7 @@ export default class Home extends Vue {
   private expiredList: todoList[] = []; // 过期的任务
   private currentList: todoList[] = []; // 今天的任务
   public leftShow: boolean = false; // 控制左侧菜单显示
-  public rightShow: boolean = true; // 控制右侧菜单显示
+  public rightShow: boolean = false; // 控制右侧菜单显示
   /**
    * init 初始化函数
    */
@@ -295,8 +296,13 @@ export default class Home extends Vue {
     }
     this.isupdate = false;
   }
+  // 切换右侧页面的显示
   toggleRightModal() {
     this.rightShow = !this.rightShow;
+  }
+  // 用户登出
+  loginout() {
+    this.$router.push("login");
   }
 }
 </script>

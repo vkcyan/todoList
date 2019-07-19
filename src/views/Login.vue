@@ -15,7 +15,12 @@
       </div>
       <div class="paddword">
         <img src="../assets/password.png" alt="" />
-        <input v-model="password" placeholder="请输入密码" type="password" />
+        <input
+          @keyup.enter="login"
+          v-model="password"
+          placeholder="请输入密码"
+          type="password"
+        />
       </div>
       <div v-show="!isLogin" class="paddword">
         <img src="../assets/password.png" alt="" />

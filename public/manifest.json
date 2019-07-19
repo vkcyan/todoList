@@ -1,0 +1,24 @@
+{
+  "name": "TodoList",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "浏览器拓展的任务清单",
+  "author": "vkcyan",
+  "browser_action": {
+    "default_icon": "./logo.png",
+    "default_popup": "./index.html"
+  },
+
+  "content_scripts": [{
+    "js": ["./index.js"],
+    "matches": [
+      "http://*/*",
+      "https://*/*"
+    ],
+    "run_at": "document_start"
+  }],
+  "permissions": [
+    "http://*/*",
+    "https://*/*"
+  ]
+}

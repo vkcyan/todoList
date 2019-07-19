@@ -12,7 +12,6 @@ export default {
     }, this.duration - 1000);
     setTimeout(() => {
       // 3s 后通过父级移除子元素的方式来移除该组件实例和 DOM 节点
-
       this.$destroy(true);
       this.$el.parentNode.removeChild(this.$el);
     }, this.duration);
@@ -26,7 +25,6 @@ export default {
       if (this.close) {
         showclass += " " + "toast_close";
       }
-      console.log(showclass);
       return showclass;
     }
   },

@@ -116,7 +116,7 @@ export default class todoInput extends Vue {
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid rgb(224, 224, 224);
-
+    min-height: 40px;
     .item-left {
       display: flex;
       align-items: center;
@@ -157,10 +157,12 @@ export default class todoInput extends Vue {
           display: inline-block;
           font-size: 15px;
           margin-left: 10px;
-          line-height: 45px;
+          line-height: 30px;
         }
         .carryOutTitle {
+          outline: none;
           z-index: 2000;
+          width: 240px;
           display: inline-block;
           font-size: 15px;
           line-height: 25px;
